@@ -3,7 +3,7 @@
 ## Integrantes
 
 - Jorge Emilio Núñez Reyes
-- (Nombre de tu compañero)
+- Gerardo Jared Martinez Espina
 
 ## Descripción
 
