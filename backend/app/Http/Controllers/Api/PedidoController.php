@@ -5,49 +5,52 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePedidoRequest;
 use App\Http\Requests\UpdatePedidoRequest;
+use App\Http\Resources\PedidoResource;
 use App\Models\DetallePedido;
 use App\Models\Pedido;
 use App\Models\Producto;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class PedidoController extends Controller
 {
-    public function index(Request $request): JsonResponse
-    {
-        $user = $request->user();
+    public function index(Request $request)
+{
+    $user = $request->user();
 
-        $query = Pedido::with([
-            'usuario',
-            'detalles.producto',
-        ]);
+    $query = Pedido::with([
+        'usuario',
+        'detalles.producto',
+    ]);
 
-        if ($user->role === 'cliente') {
-            $query->where('user_id', $user->id);
-        }
-
-        if ($request->filled('estado')) {
-            $query->where('estado', $request->estado);
-        }
-
-        if ($request->filled('buscar')) {
-            $query->where('folio', 'like', '%' . $request->buscar . '%');
-        }
-
-        $pedidos = $query
-            ->orderByDesc('id')
-            ->paginate(10)
-            ->withQueryString();
-
-        return response()->json($pedidos);
+    if ($user->role === 'cliente') {
+        $query->where('user_id', $user->id);
     }
+
+    if ($request->filled('estado')) {
+        $query->where('estado', $request->estado);
+    }
+
+    if ($request->filled('buscar')) {
+        $query->where('folio', 'like', '%' . $request->buscar . '%');
+    }
+
+    $pedidos = $query
+        ->orderByDesc('id')
+        ->paginate(10)
+        ->withQueryString();
+
+    return PedidoResource::collection($pedidos);
+}
+
 
     public function store(StorePedidoRequest $request): JsonResponse
     {
         $user = $request->user();
 
         $pedido = DB::transaction(function () use ($request, $user) {
+
             $total = 0;
 
             $pedido = Pedido::create([
@@ -61,6 +64,7 @@ class PedidoController extends Controller
             ]);
 
             foreach ($request->productos as $item) {
+
                 $producto = Producto::lockForUpdate()
                     ->findOrFail($item['producto_id']);
 
@@ -97,74 +101,94 @@ class PedidoController extends Controller
             return $pedido;
         });
 
+
         $pedido->load([
             'usuario',
             'detalles.producto',
         ]);
 
+
         return response()->json([
             'message' => 'Pedido creado correctamente.',
-            'data' => $pedido,
+            'data' => new PedidoResource($pedido),
         ], 201);
     }
+
 
     public function show(Request $request, Pedido $pedido): JsonResponse
     {
         $user = $request->user();
 
         if ($user->role === 'cliente' && $pedido->user_id !== $user->id) {
+
             return response()->json([
                 'message' => 'No tienes permiso para ver este pedido.',
             ], 403);
+
         }
+
 
         $pedido->load([
             'usuario',
             'detalles.producto',
         ]);
 
-        return response()->json([
-            'data' => $pedido,
-        ]);
+
+        return new PedidoResource($pedido);
     }
+
 
     public function update(
         UpdatePedidoRequest $request,
         Pedido $pedido
     ): JsonResponse {
+
         $pedido->update([
             'estado' => $request->estado,
         ]);
 
+
         return response()->json([
             'message' => 'Estado del pedido actualizado correctamente.',
-            'data' => $pedido,
+            'data' => new PedidoResource($pedido),
         ]);
     }
+
 
     public function destroy(Pedido $pedido): JsonResponse
     {
         if ($pedido->estado !== 'pendiente') {
+
             return response()->json([
                 'message' => 'Solo se pueden eliminar pedidos pendientes.',
             ], 409);
+
         }
 
+
         DB::transaction(function () use ($pedido) {
+
             $pedido->load('detalles');
 
+
             foreach ($pedido->detalles as $detalle) {
+
                 Producto::where('id', $detalle->producto_id)
                     ->increment('stock', $detalle->cantidad);
+
             }
 
+
             $pedido->delete();
+
         });
+
 
         return response()->json([
             'message' => 'Pedido eliminado correctamente.',
         ]);
     }
+
 
     private function generarFolio(): string
     {
