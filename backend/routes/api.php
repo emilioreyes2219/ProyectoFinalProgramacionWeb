@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\ColorController;
 use App\Http\Controllers\Api\ProductoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\PedidoController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -25,6 +25,29 @@ Route::middleware('auth:sanctum')->group(function () {
             'message' => 'Acceso de administrador correcto.',
         ]);
     })->middleware('role:admin');
+
+
+// =========================
+// PEDIDOS
+// =========================
+
+// Todos los usuarios autenticados
+Route::get('/pedidos', [PedidoController::class, 'index']);
+Route::get('/pedidos/{pedido}', [PedidoController::class, 'show']);
+
+// Cliente puede crear pedidos
+Route::post('/pedidos', [PedidoController::class, 'store'])
+    ->middleware('role:cliente');
+
+// Admin y vendedor gestionan el estado
+Route::put('/pedidos/{pedido}', [PedidoController::class, 'update'])
+    ->middleware('role:admin,vendedor');
+
+// Admin puede eliminar pedidos pendientes
+Route::delete('/pedidos/{pedido}', [PedidoController::class, 'destroy'])
+    ->middleware('role:admin');
+
+
 
     // =========================
     // PRODUCTOS
