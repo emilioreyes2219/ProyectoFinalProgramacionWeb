@@ -679,3 +679,162 @@ tr{
     margin:0;
 
 }
+
+ /* CONTENEDOR PRINCIPAL */
+.dashboard {
+
+    padding: 45px;
+
+}
+
+
+/* BIENVENIDA */
+
+.bienvenida {
+
+    margin-top: 25px;
+
+    margin-bottom: 40px;
+
+}
+
+
+.bienvenida h2 {
+
+    font-size: 30px;
+
+}
+
+
+
+/* TARJETAS */
+
+.cards-dashboard {
+
+    display: grid;
+
+    grid-template-columns: repeat(4, 1fr);
+
+    gap: 25px;
+
+    margin-bottom: 50px;
+
+}
+
+
+
+.card-dashboard {
+
+    background: linear-gradient(
+        135deg,
+        #7c3aed,
+        #9333ea
+    );
+
+    color:white;
+
+    padding:35px 20px;
+
+    border-radius:20px;
+
+    text-align:center;
+
+    box-shadow:0 10px 25px rgba(124,58,237,.25);
+
+    transition:.3s;
+
+}
+
+
+
+.card-dashboard:hover {
+
+    transform:translateY(-5px);
+
+    box-shadow:0 15px 30px rgba(124,58,237,.35);
+
+}
+
+
+
+.card-dashboard h3 {
+
+    font-size:20px;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.card-dashboard span {
+
+    font-size:45px;
+
+    font-weight:bold;
+
+}
+
+
+
+/* PRODUCTOS RECIENTES */
+
+.panel-dashboard {
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    box-shadow:0 8px 25px rgba(0,0,0,.08);
+
+}
+
+
+
+.panel-dashboard h2 {
+
+    margin-bottom:25px;
+
+}
+
+
+
+.panel-dashboard ul {
+
+    list-style:none;
+
+    padding:0;
+
+}
+
+
+
+.panel-dashboard li {
+
+    background:#f5f3ff;
+
+    margin-bottom:12px;
+
+    padding:15px 20px;
+
+    border-radius:12px;
+
+    font-size:18px;
+
+    display:flex;
+
+    align-items:center;
+
+}
+
+
+
+.panel-dashboard li::before {
+
+    content:"📦";
+
+    margin-right:12px;
+
+}
