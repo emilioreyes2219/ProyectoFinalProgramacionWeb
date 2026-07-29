@@ -73,9 +73,13 @@ export default function PedidoModal({
                             Pendiente
                         </option>
 
-                        <option value="procesando">
-                            Procesando
-                        </option>
+                       <option value="confirmado">
+    Confirmado
+</option>
+
+<option value="en_preparacion">
+    En preparación
+</option>
 
                         <option value="enviado">
                             Enviado

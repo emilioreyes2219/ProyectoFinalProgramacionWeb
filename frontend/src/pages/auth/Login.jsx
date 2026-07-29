@@ -67,7 +67,24 @@ setMensaje(
 );
 
 
-navigate("/dashboard");
+const rol = response.data.user.role;
+
+
+if(rol === "admin"){
+
+    navigate("/dashboard");
+
+}
+else if(rol === "cliente"){
+
+    navigate("/catalogo");
+
+}
+else if(rol === "vendedor"){
+
+    navigate("/vendedor");
+
+}
 
 
 

@@ -2,13 +2,15 @@ export default function ProductoTable({
 
     productos,
 
+    editar,
+
     eliminar,
 
     activar,
 
     eliminarPermanente,
 
-    editar
+    rol
 
 }) {
 
@@ -98,61 +100,87 @@ producto.activo
 <td>
 
 <div className="acciones-producto">
-<button
-onClick={() =>
-editar(producto)
-}
->
-Editar
-</button>
-
 
 
 {
 
-producto.activo ? (
+rol === "admin" && (
+
+    <>
 
 
-<button
-onClick={() =>
-eliminar(producto.id)
-}
->
-Desactivar
-</button>
+        <button
+            onClick={() =>
+                editar(producto)
+            }
+        >
+
+            Editar
+
+        </button>
 
 
-) : (
 
 
-<button
-onClick={() =>
-activar(producto.id)
-}
->
-Activar
-</button>
+        {
 
+        producto.activo ? (
+
+
+            <button
+                onClick={() =>
+                    eliminar(producto.id)
+                }
+            >
+
+                Desactivar
+
+            </button>
+
+
+        ) : (
+
+
+            <button
+                onClick={() =>
+                    activar(producto.id)
+                }
+            >
+
+                Activar
+
+            </button>
+
+
+        )
+
+        }
+
+
+
+
+        <button
+            onClick={() =>
+                eliminarPermanente(producto.id)
+            }
+        >
+
+            Eliminar
+
+        </button>
+
+
+
+    </>
 
 )
 
 }
 
 
-
-
-<button
-onClick={() =>
-eliminarPermanente(producto.id)
-}
->
-Eliminar
-</button>
-
 </div>
 
 </td>
-
 
 </tr>
 

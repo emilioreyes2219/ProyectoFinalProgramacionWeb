@@ -17,6 +17,15 @@ import ProductoModal from "../../components/productos/ProductoModal";
 export default function Productos() {
 
 
+    const user = JSON.parse(
+        localStorage.getItem("user")
+    );
+
+
+    const rol = user?.role;
+
+
+
     const [productos, setProductos] = useState([]);
 
     const [mostrarForm, setMostrarForm] = useState(false);
@@ -37,6 +46,8 @@ export default function Productos() {
         activo: ""
 
     });
+
+
 
 
 
@@ -65,6 +76,8 @@ export default function Productos() {
 
 
 
+
+
     const cargarCategorias = async()=>{
 
         try{
@@ -84,12 +97,18 @@ export default function Productos() {
 
 
 
+
+
     useEffect(()=>{
 
         cargarProductos();
+
         cargarCategorias();
 
     },[pagina,filtros]);
+
+
+
 
 
 
@@ -109,6 +128,9 @@ export default function Productos() {
         }
 
     };
+
+
+
 
 
 
@@ -167,6 +189,10 @@ export default function Productos() {
 
 
 
+
+
+
+
     const eliminar = async(id)=>{
 
 
@@ -220,6 +246,8 @@ export default function Productos() {
 
 
 
+
+
     const editar=(producto)=>{
 
         setProductoEditar(producto);
@@ -231,6 +259,9 @@ export default function Productos() {
 
 
 
+
+
+
     return (
 
         <div>
@@ -238,22 +269,34 @@ export default function Productos() {
 
             <div>
 
-                <h1>Productos</h1>
+
+                <h1>
+                    Productos
+                </h1>
 
 
-                <button
-                    onClick={()=>{
 
-                        setProductoEditar(null);
+                {
+                    rol === "admin" && (
 
-                        setMostrarForm(true);
+                        <button
 
-                    }}
-                >
+                            onClick={()=>{
 
-                    Nuevo producto
+                                setProductoEditar(null);
 
-                </button>
+                                setMostrarForm(true);
+
+                            }}
+
+                        >
+
+                            Nuevo producto
+
+                        </button>
+
+                    )
+                }
 
 
             </div>
@@ -261,7 +304,11 @@ export default function Productos() {
 
 
 
+
+
+
             <div className="filtros-productos">
+
 
 
                 <input
@@ -283,6 +330,9 @@ export default function Productos() {
                     }
 
                 />
+
+
+
 
 
 
@@ -308,9 +358,11 @@ export default function Productos() {
                         Todos
                     </option>
 
+
                     <option value="true">
                         Activos
                     </option>
+
 
                     <option value="false">
                         Inactivos
@@ -318,6 +370,10 @@ export default function Productos() {
 
 
                 </select>
+
+
+
+
 
 
 
@@ -340,17 +396,22 @@ export default function Productos() {
 
                 >
 
+
                     <option value="">
                         Todas las categorías
                     </option>
+
 
 
                     {
                         categorias.map(categoria=>(
 
                             <option
+
                                 key={categoria.id}
+
                                 value={categoria.id}
+
                             >
 
                                 {categoria.nombre}
@@ -371,23 +432,33 @@ export default function Productos() {
 
 
 
-            <ProductoModal
 
-                abierto={mostrarForm}
 
-                producto={productoEditar}
+            {
+                rol === "admin" && (
 
-                actualizarLista={cargarProductos}
+                    <ProductoModal
 
-                onCerrar={()=>{
+                        abierto={mostrarForm}
 
-                    setMostrarForm(false);
+                        producto={productoEditar}
 
-                    setProductoEditar(null);
+                        actualizarLista={cargarProductos}
 
-                }}
+                        onCerrar={()=>{
 
-            />
+                            setMostrarForm(false);
+
+                            setProductoEditar(null);
+
+                        }}
+
+                    />
+
+                )
+            }
+
+
 
 
 
@@ -405,7 +476,11 @@ export default function Productos() {
 
                 eliminarPermanente={eliminarPermanente}
 
+                rol={rol}
+
             />
+
+
 
 
 
@@ -430,7 +505,10 @@ export default function Productos() {
 
 
 
+
+
                 <div>
+
 
 
                     <button
@@ -447,7 +525,11 @@ export default function Productos() {
 
 
 
+
+
                     Página {meta.current_page}
+
+
 
 
 
@@ -466,6 +548,7 @@ export default function Productos() {
 
 
                 </div>
+
 
 
             </div>

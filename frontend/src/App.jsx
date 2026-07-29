@@ -4,7 +4,7 @@ import {
     Navigate,
 } from "react-router-dom";
 
-import Pedidos from "./pages/pedidos/Pedidos";
+
 import AuthLayout from "./layouts/AuthLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 
@@ -19,68 +19,296 @@ import Categorias from "./pages/categorias/Categorias";
 
 import Productos from "./pages/productos/Productos";
 
+import Pedidos from "./pages/pedidos/Pedidos";
 
+import Catalogo from "./pages/cliente/Catalogo";
+
+import VendedorDashboard from "./pages/vendedor/VendedorDashboard";
+import MisPedidos from "./pages/cliente/MisPedidos";
+import Carrito from "./pages/cliente/Carrito";
 import ProtectedRoute from "./components/ProtectedRoute";
+
+
+
 function App() {
+
 
     return (
 
+
         <Routes>
 
-            {/* Rutas públicas */}
+
+
+            {/* =====================
+                RUTAS PUBLICAS
+            ====================== */}
+
+
             <Route element={<AuthLayout />}>
+
 
                 <Route
                     path="/login"
                     element={<Login />}
                 />
 
+
                 <Route
                     path="/register"
                     element={<Register />}
                 />
 
+
             </Route>
 
-            {/* Rutas protegidas */}
+
+
+
+
+
+            {/* =====================
+                ADMIN
+            ====================== */}
+
+
             <Route
+
                 element={
-                    <ProtectedRoute>
-                        <DashboardLayout />
-                    </ProtectedRoute>
+
+                    <ProtectedRoute
+                        allowedRoles={["admin"]}
+                    />
+
                 }
+
             >
 
-                <Route
-                    path="/dashboard"
-                    element={<Dashboard />}
-                />
-<Route
-    path="/categorias"
-    element={<Categorias />}
-/>
-<Route
-    path="/pedidos"
-    element={<Pedidos />}
-/>
 
-<Route
-    path="/productos"
-    element={<Productos />}
-/>
+                <Route
+                    element={<DashboardLayout />}
+                >
+
+
+                    <Route
+                        path="/dashboard"
+                        element={<Dashboard />}
+                    />
+
+
+                    <Route
+                        path="/categorias"
+                        element={<Categorias />}
+                    />
+
+
+                </Route>
+
 
             </Route>
 
-            {/* Redirección por defecto */}
+
+
+
+
+
+
+            {/* =====================
+                ADMIN + VENDEDOR
+            ====================== */}
+
+
             <Route
+
+                element={
+
+                    <ProtectedRoute
+
+                        allowedRoles={[
+                            "admin",
+                            "vendedor"
+                        ]}
+
+                    />
+
+                }
+
+            >
+
+
+                <Route
+
+                    element={<DashboardLayout />}
+
+                >
+
+
+
+                    <Route
+
+                        path="/productos"
+
+                        element={<Productos />}
+
+                    />
+
+
+
+                    <Route
+
+                        path="/pedidos"
+
+                        element={<Pedidos />}
+
+                    />
+
+
+
+                </Route>
+
+
+            </Route>
+
+
+
+
+
+
+
+            {/* =====================
+                VENDEDOR
+            ====================== */}
+
+
+            <Route
+
+                element={
+
+                    <ProtectedRoute
+
+                        allowedRoles={[
+                            "vendedor"
+                        ]}
+
+                    />
+
+                }
+
+            >
+
+
+                <Route
+
+                    element={<DashboardLayout />}
+
+                >
+
+
+
+                    <Route
+
+                        path="/vendedor"
+
+                        element={<VendedorDashboard />}
+
+                    />
+
+
+                </Route>
+
+
+            </Route>
+
+
+
+
+
+
+
+            {/* =====================
+                CLIENTE
+            ====================== */}
+
+<Route
+    element={
+        <ProtectedRoute
+            allowedRoles={[
+                "cliente"
+            ]}
+        />
+    }
+>
+
+
+    <Route
+        element={<DashboardLayout />}
+    >
+
+
+
+        <Route
+            path="/catalogo"
+            element={<Catalogo />}
+        />
+
+
+
+        <Route
+            path="/carrito"
+            element={<Carrito />}
+        />
+
+
+
+        <Route
+            path="/mis-pedidos"
+            element={<MisPedidos />}
+        />
+
+
+    </Route>
+
+
+</Route>
+              
+
+
+
+
+
+
+
+            {/* =====================
+                DEFAULT
+            ====================== */}
+
+
+            <Route
+
                 path="*"
-                element={<Navigate to="/login" replace />}
+
+                element={
+
+                    <Navigate
+
+                        to="/login"
+
+                        replace
+
+                    />
+
+                }
+
             />
 
+
+
         </Routes>
+
 
     );
 
 }
+
 
 export default App;
