@@ -9,39 +9,72 @@ import {
 
 import ProductoTable from "../../components/productos/ProductoTable";
 import ProductoForm from "../../components/productos/ProductoForm";
-
+import { obtenerCategorias } from "../../services/categoriaService";
 export default function Productos(){
 
 
     const [productos, setProductos] = useState([]);
 const [mostrarForm, setMostrarForm] = useState(false);
 const [productoEditar, setProductoEditar] = useState(null);
+const [categorias, setCategorias] = useState([]);
+const [pagina, setPagina] = useState(1);
 
+const [meta, setMeta] = useState({});
+
+const [filtros, setFiltros] = useState({
+
+    buscar:"",
+    categoria_id:"",
+    activo:""
+
+});
     const cargarProductos = async () => {
 
-        try {
+    try {
 
-            const data = await obtenerProductos();
-
-            setProductos(data.data);
-
-
-        } catch(error){
-
-            console.log(error);
-
-        }
-
-    };
+        const data = await obtenerProductos(
+            filtros,
+            pagina
+        );
 
 
+        setProductos(data.data);
 
 
-    useEffect(()=>{
+        setMeta(data.meta);
 
-        cargarProductos();
 
-    },[]);
+    } catch(error){
+
+        console.log(error);
+
+    }
+
+};
+const cargarCategorias = async()=>{
+
+    try{
+
+        const data = await obtenerCategorias();
+
+        setCategorias(data.data ?? data);
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+};
+
+
+
+useEffect(()=>{
+
+    cargarProductos();
+    cargarCategorias();
+
+},[pagina,filtros]);
 
 
 const activar = async(id)=>{
@@ -213,7 +246,104 @@ Swal.fire({
                 Productos
             </h1>
 
+<div className="filtros-productos">
 
+
+<input
+
+    placeholder="Buscar producto"
+
+    value={filtros.buscar}
+
+    onChange={(e)=>
+        setFiltros({
+
+            ...filtros,
+
+            buscar:e.target.value
+
+        })
+    }
+
+/>
+
+
+
+<select
+
+    value={filtros.activo}
+
+    onChange={(e)=>
+        setFiltros({
+
+            ...filtros,
+
+            activo:e.target.value
+
+        })
+    }
+
+>
+
+    <option value="">
+        Todos
+    </option>
+
+    <option value="true">
+        Activos
+    </option>
+
+    <option value="false">
+        Inactivos
+    </option>
+
+
+</select>
+
+
+
+
+<select
+
+    value={filtros.categoria_id}
+
+    onChange={(e)=>
+        setFiltros({
+
+            ...filtros,
+
+            categoria_id:e.target.value
+
+        })
+    }
+
+>
+
+    <option value="">
+        Todas las categorías
+    </option>
+
+
+    {
+        categorias.map((categoria)=>(
+
+            <option
+                key={categoria.id}
+                value={categoria.id}
+            >
+
+                {categoria.nombre}
+
+            </option>
+
+        ))
+    }
+
+
+</select>
+
+
+</div>
 
            <button
     onClick={() =>
@@ -260,6 +390,47 @@ eliminarPermanente={eliminarPermanente}
 editar={editar}
 
 />
+
+<div className="paginacion">
+
+
+<button
+
+disabled={!meta.prev_page_url}
+
+onClick={()=>
+setPagina(pagina-1)
+}
+
+>
+Anterior
+</button>
+
+
+
+<span>
+
+Página {meta.current_page}
+de {meta.last_page}
+
+</span>
+
+
+
+<button
+
+disabled={!meta.next_page_url}
+
+onClick={()=>
+setPagina(pagina+1)
+}
+
+>
+Siguiente
+</button>
+
+
+</div>
 
 
         </div>

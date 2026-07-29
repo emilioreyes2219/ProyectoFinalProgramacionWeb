@@ -35,6 +35,10 @@ Stock
 </th>
 
 <th>
+Categoria
+</th>
+
+<th>
 Estado
 </th>
 
@@ -73,6 +77,9 @@ ${producto.precio}
 {producto.stock}
 </td>
 
+<td>
+    {producto.categoria?.nombre || "Sin categoría"}
+</td>
 
 <td>
 
@@ -90,7 +97,7 @@ producto.activo
 
 <td>
 
-
+<div className="acciones-producto">
 <button
 onClick={() =>
 editar(producto)
@@ -142,7 +149,7 @@ eliminarPermanente(producto.id)
 Eliminar
 </button>
 
-
+</div>
 
 </td>
 

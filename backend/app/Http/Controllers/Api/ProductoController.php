@@ -32,9 +32,14 @@ class ProductoController extends Controller
         }
 
         // Filtrar por estado
-        if ($request->has('activo')) {
-            $query->where('activo', $request->boolean('activo'));
-        }
+if ($request->filled('activo')) {
+
+    $query->where(
+        'activo',
+        $request->boolean('activo')
+    );
+
+}
 
         $productos = $query
             ->orderByDesc('id')
