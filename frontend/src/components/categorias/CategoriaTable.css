@@ -1,0 +1,143 @@
+.table-container{
+
+    background:white;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+
+}
+
+.categoria-table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+}
+
+.categoria-table thead{
+
+    background:#7c3aed;
+
+    color:white;
+
+}
+
+.categoria-table th{
+
+    padding:16px;
+
+    text-align:left;
+
+}
+
+.categoria-table td{
+
+    padding:16px;
+
+    border-bottom:1px solid #ececec;
+
+}
+
+.categoria-table tbody tr:hover{
+
+    background:#faf7ff;
+
+}
+
+.badge{
+
+    padding:6px 12px;
+
+    border-radius:50px;
+
+    font-size:13px;
+
+    font-weight:600;
+
+}
+
+.active{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+}
+
+.inactive{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+}
+
+.actions{
+
+    display:flex;
+
+    gap:10px;
+
+}
+
+.edit-btn{
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    width:38px;
+
+    height:38px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+.delete-btn{
+
+    background:#dc2626;
+
+    color:white;
+
+    border:none;
+
+    width:38px;
+
+    height:38px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+}
+
+.edit-btn:hover{
+
+    background:#1d4ed8;
+
+}
+
+.delete-btn:hover{
+
+    background:#b91c1c;
+
+}
+
+.empty{
+
+    text-align:center;
+
+    padding:35px;
+
+    color:#777;
+
+}

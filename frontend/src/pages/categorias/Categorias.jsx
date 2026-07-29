@@ -1,27 +1,149 @@
 import { useEffect, useState } from "react";
-import { obtenerCategorias } from "../../services/categoriaService";
+import Swal from "sweetalert2";
+
+import CategoriaTable from "../../components/categorias/CategoriaTable";
+import CategoriaModal from "../../components/categorias/CategoriaModal";
+
+import {
+    obtenerCategorias,
+    crearCategoria,
+    actualizarCategoria,
+    eliminarCategoria,
+} from "../../services/categoriaService";
 
 export default function Categorias() {
 
     const [categorias, setCategorias] = useState([]);
+    const [modalAbierto, setModalAbierto] = useState(false);
+    const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
+    const [pagina, setPagina] = useState(1);
+
+const [buscar, setBuscar] = useState("");
+
+const [pagination, setPagination] = useState({});
 
     useEffect(() => {
 
-        cargarCategorias();
+    cargarCategorias();
 
-    }, []);
+}, [pagina, buscar]);
 
     const cargarCategorias = async () => {
 
+    try {
+
+        const data = await obtenerCategorias(
+            pagina,
+            buscar
+        );
+
+        setCategorias(data.data);
+
+        setPagination(data);
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+};
+
+    const nuevaCategoria = () => {
+        setCategoriaSeleccionada(null);
+        setModalAbierto(true);
+    };
+
+    const editarCategoria = (categoria) => {
+        setCategoriaSeleccionada(categoria);
+        setModalAbierto(true);
+    };
+
+    const guardarCategoria = async (categoria) => {
+
         try {
 
-            const data = await obtenerCategorias();
+            if (categoriaSeleccionada) {
 
-            setCategorias(data.data);
+                await actualizarCategoria(
+                    categoriaSeleccionada.id,
+                    categoria
+                );
+
+                Swal.fire(
+                    "Actualizada",
+                    "La categoría fue actualizada.",
+                    "success"
+                );
+
+            } else {
+
+                await crearCategoria(categoria);
+
+                Swal.fire(
+                    "Creada",
+                    "La categoría fue creada.",
+                    "success"
+                );
+
+            }
+
+            setModalAbierto(false);
+            cargarCategorias();
 
         } catch (error) {
 
-            console.error(error);
+            Swal.fire(
+                "Error",
+                error.response?.data?.message ??
+                "No fue posible guardar.",
+                "error"
+            );
+
+        }
+
+    };
+
+    const borrarCategoria = async (categoria) => {
+
+        const resultado = await Swal.fire({
+
+            title: "¿Eliminar categoría?",
+
+            text: categoria.nombre,
+
+            icon: "warning",
+
+            showCancelButton: true,
+
+            confirmButtonText: "Eliminar",
+
+            cancelButtonText: "Cancelar",
+
+        });
+
+        if (!resultado.isConfirmed) return;
+
+        try {
+
+            await eliminarCategoria(categoria.id);
+
+            Swal.fire(
+                "Eliminada",
+                "La categoría fue eliminada.",
+                "success"
+            );
+
+            cargarCategorias();
+
+        } catch (error) {
+
+            Swal.fire(
+                "No se puede eliminar",
+                error.response?.data?.message ??
+                "Ocurrió un error.",
+                "error"
+            );
 
         }
 
@@ -29,52 +151,133 @@ export default function Categorias() {
 
     return (
 
-        <div>
+        <div className="card">
 
-            <h1>Categorías</h1>
+            <div className="card-header">
 
-            <table border="1" cellPadding="10">
+                <h2>Categorías</h2>
 
-                <thead>
+                <button
+                    className="btn-primary"
+                    onClick={nuevaCategoria}
+                >
+                    + Nueva categoría
+                </button>
 
-                    <tr>
+            </div>
+<div
+    style={{
+        display: "flex",
+        justifyContent: "space-between",
+        marginBottom: "20px",
+    }}
+>
 
-                        <th>ID</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Activa</th>
+    <input
+        type="text"
+        placeholder="Buscar categoría..."
+        value={buscar}
+        onChange={(e) => {
 
-                    </tr>
+            setBuscar(e.target.value);
 
-                </thead>
+            setPagina(1);
 
-                <tbody>
+        }}
+        style={{
+            width: "300px",
+            padding: "10px",
+        }}
+    />
 
-                    {categorias.map((categoria) => (
+</div>
+            <CategoriaTable
+                categorias={categorias}
+                onEditar={editarCategoria}
+                onEliminar={borrarCategoria}
+            />
+<div
+    style={{
+        marginTop: "20px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+    }}
+>
 
-                        <tr key={categoria.id}>
+    <span>
 
-                            <td>{categoria.id}</td>
+        Mostrando
 
-                            <td>{categoria.nombre}</td>
+        {" "}
 
-                            <td>{categoria.descripcion}</td>
+        {pagination.from ?? 0}
 
-                            <td>
+        -
 
-                                {categoria.activo ? "Sí" : "No"}
+        {pagination.to ?? 0}
 
-                            </td>
+        de
 
-                        </tr>
+        {" "}
 
-                    ))}
+        {pagination.total ?? 0}
 
-                </tbody>
+        categorías
 
-            </table>
+    </span>
+
+    <div>
+
+        <button
+            disabled={!pagination.prev_page_url}
+            onClick={() => setPagina(pagina - 1)}
+        >
+            Anterior
+        </button>
+
+        <span
+            style={{
+                margin: "0 15px",
+            }}
+        >
+
+            Página
+
+            {" "}
+
+            {pagination.current_page ?? 1}
+
+            {" "}
+
+            de
+
+            {" "}
+
+            {pagination.last_page ?? 1}
+
+        </span>
+
+        <button
+            disabled={!pagination.next_page_url}
+            onClick={() => setPagina(pagina + 1)}
+        >
+            Siguiente
+        </button>
+
+    </div>
+
+</div>
+            <CategoriaModal
+                abierto={modalAbierto}
+                categoria={categoriaSeleccionada}
+                onCerrar={() => setModalAbierto(false)}
+                onGuardar={guardarCategoria}
+            />
 
         </div>
+
+        
 
     );
 

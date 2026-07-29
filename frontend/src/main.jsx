@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import "./styles/dashboard.css";
 import {
     BrowserRouter
 } from 'react-router-dom'
