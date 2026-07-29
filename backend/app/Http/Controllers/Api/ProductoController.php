@@ -101,16 +101,57 @@ class ProductoController extends Controller
             'data' => new ProductoResource($producto),
         ]);
     }
+/**
+ * Desactivar producto.
+ */
+public function destroy(Producto $producto): JsonResponse
+{
+    $producto->update([
+        'activo' => false
+    ]);
 
-    /**
-     * Eliminar producto.
-     */
-    public function destroy(Producto $producto): JsonResponse
-    {
-        $producto->delete();
+    return response()->json([
+        'message' => 'Producto desactivado correctamente.',
+    ]);
+}
 
-        return response()->json([
-            'message' => 'Producto eliminado correctamente.',
-        ]);
-    }
+
+/**
+ * Activar producto.
+ */
+public function activate(Producto $producto): JsonResponse
+{
+    $producto->update([
+        'activo' => true
+    ]);
+
+    return response()->json([
+        'message' => 'Producto activado correctamente.',
+    ]);
+}
+
+
+/**
+ * Eliminar producto definitivamente.
+ */
+public function forceDelete(Producto $producto): JsonResponse
+{
+
+    // Eliminar detalles de pedidos relacionados
+    $producto->detallesPedido()->delete();
+
+
+    // Eliminar relación con colores
+    $producto->colores()->detach();
+
+
+    // Eliminar producto definitivamente
+    $producto->delete();
+
+
+    return response()->json([
+        'message' => 'Producto eliminado permanentemente.',
+    ]);
+
+}
 }

@@ -51,12 +51,23 @@ export default function Login() {
 
 
 
-            setMensaje(
-                "Inicio de sesión exitoso"
-            );
+         localStorage.setItem(
+    "token",
+    response.data.token
+);
+
+localStorage.setItem(
+    "user",
+    JSON.stringify(response.data.user)
+);
 
 
-            navigate("/dashboard");
+setMensaje(
+    "Inicio de sesión exitoso"
+);
+
+
+navigate("/dashboard");
 
 
 

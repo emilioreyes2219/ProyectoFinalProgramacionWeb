@@ -4,17 +4,23 @@ import {
     Navigate,
 } from "react-router-dom";
 
+
 import AuthLayout from "./layouts/AuthLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
+
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 
+
 import Dashboard from "./pages/dashboard/Dashboard";
+
 import Categorias from "./pages/categorias/Categorias";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+import Productos from "./pages/productos/Productos";
 
+
+import ProtectedRoute from "./components/ProtectedRoute";
 function App() {
 
     return (
@@ -49,11 +55,16 @@ function App() {
                     path="/dashboard"
                     element={<Dashboard />}
                 />
+<Route
+    path="/categorias"
+    element={<Categorias />}
+/>
 
-                <Route
-                    path="/categorias"
-                    element={<Categorias />}
-                />
+
+<Route
+    path="/productos"
+    element={<Productos />}
+/>
 
             </Route>
 

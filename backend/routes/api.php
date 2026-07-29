@@ -49,18 +49,42 @@ Route::delete('/pedidos/{pedido}', [PedidoController::class, 'destroy'])
 
 
 
-    // =========================
-    // PRODUCTOS
-    // =========================
+   // =========================
+// PRODUCTOS
+// =========================
 
-    Route::get('/productos', [ProductoController::class, 'index']);
-    Route::get('/productos/{producto}', [ProductoController::class, 'show']);
+Route::get('/productos', [ProductoController::class, 'index']);
+Route::get('/productos/{producto}', [ProductoController::class, 'show']);
 
-    Route::middleware('role:admin,vendedor')->group(function () {
-        Route::post('/productos', [ProductoController::class, 'store']);
-        Route::put('/productos/{producto}', [ProductoController::class, 'update']);
-        Route::delete('/productos/{producto}', [ProductoController::class, 'destroy']);
-    });
+
+Route::middleware('role:admin,vendedor')->group(function () {
+
+    Route::post('/productos', [ProductoController::class, 'store']);
+
+    Route::put('/productos/{producto}', [ProductoController::class, 'update']);
+
+
+    // Desactivar
+    Route::delete(
+        '/productos/{producto}',
+        [ProductoController::class, 'destroy']
+    );
+
+
+    // Activar
+    Route::put(
+        '/productos/{producto}/activate',
+        [ProductoController::class, 'activate']
+    );
+
+});
+
+
+// Solo administrador
+Route::delete(
+    '/productos/{producto}/force',
+    [ProductoController::class, 'forceDelete']
+)->middleware('role:admin');
 
     // =========================
     // COLORES
