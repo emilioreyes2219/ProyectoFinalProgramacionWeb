@@ -227,3 +227,47 @@ button:hover{
     }
 
 }
+
+.dashboard-container{
+    display:flex;
+    min-height:100vh;
+}
+
+.sidebar{
+    width:240px;
+    background:#1f2937;
+    color:white;
+    padding:20px;
+}
+
+.sidebar h2{
+    margin-bottom:30px;
+}
+
+.sidebar nav{
+    display:flex;
+    flex-direction:column;
+    gap:15px;
+}
+
+.sidebar a{
+    color:white;
+    text-decoration:none;
+}
+
+.dashboard-content{
+    flex:1;
+}
+
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px;
+    border-bottom:1px solid #ddd;
+    background:white;
+}
+
+.main-content{
+    padding:30px;
+}

@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { getToken, getUser } from "../utils/auth";
+import { getToken, getUser } from "../services/auth";
 
 export default function ProtectedRoute({
     children,

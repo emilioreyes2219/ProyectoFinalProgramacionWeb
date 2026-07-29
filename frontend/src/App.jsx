@@ -12,39 +12,44 @@ import Dashboard from "./pages/dashboard/Dashboard";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
+import DashboardLayout from "./layouts/DashboardLayout";
+
 function App() {
 
     return (
 
         <Routes>
 
-            <Route element={<AuthLayout />}>
+    <Route element={<AuthLayout />}>
 
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
+        <Route
+            path="/login"
+            element={<Login />}
+        />
 
-            </Route>
+    </Route>
 
-            <Route
-    path="/dashboard"
-    element={
-        <ProtectedRoute>
-            <Dashboard />
-        </ProtectedRoute>
-    }
-/>
+    <Route
+        element={
+            <ProtectedRoute>
+                <DashboardLayout />
+            </ProtectedRoute>
+        }
+    >
 
-            <Route
+        <Route
+            path="/dashboard"
+            element={<Dashboard />}
+        />
 
-                path="*"
+    </Route>
 
-                element={<Navigate to="/login" replace />}
+    <Route
+        path="*"
+        element={<Navigate to="/login" replace />}
+    />
 
-            />
-
-        </Routes>
+</Routes>
 
     );
 
