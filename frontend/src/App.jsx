@@ -4,7 +4,7 @@ import {
     Navigate,
 } from "react-router-dom";
 
-
+import Pedidos from "./pages/pedidos/Pedidos";
 import AuthLayout from "./layouts/AuthLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 
@@ -59,7 +59,10 @@ function App() {
     path="/categorias"
     element={<Categorias />}
 />
-
+<Route
+    path="/pedidos"
+    element={<Pedidos />}
+/>
 
 <Route
     path="/productos"

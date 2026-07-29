@@ -1,14 +1,29 @@
 import api from "../api/axios";
 
 
+const authConfig = () => ({
+
+    headers: {
+
+        Authorization:
+        `Bearer ${localStorage.getItem("token")}`,
+
+    },
+
+});
+
+
+
 export const obtenerProductos = async (
-    filtros,
-    pagina
+    filtros = {},
+    pagina = 1
 )=>{
 
 
     const response = await api.get(
+
         "/productos",
+
         {
 
             params:{
@@ -17,77 +32,121 @@ export const obtenerProductos = async (
 
                 page:pagina
 
-            }
+            },
+
+            ...authConfig()
 
         }
+
     );
 
 
     return response.data;
 
+
 };
 
 
 
-export const crearProducto = async (producto) => {
+export const crearProducto = async(producto)=>{
+
 
     const response = await api.post(
+
         "/productos",
-        producto
+
+        producto,
+
+        authConfig()
+
     );
 
+
     return response.data;
+
 
 };
 
 
 
-export const actualizarProducto = async (id, producto) => {
+
+export const actualizarProducto = async(id,producto)=>{
+
 
     const response = await api.put(
+
         `/productos/${id}`,
-        producto
+
+        producto,
+
+        authConfig()
+
     );
 
+
     return response.data;
+
 
 };
 
 
 
 
+export const eliminarProducto = async(id)=>{
 
-
-export const eliminarProducto = async (id) => {
 
     const response = await api.delete(
-        `/productos/${id}`
+
+        `/productos/${id}`,
+
+        authConfig()
+
     );
 
+
     return response.data;
+
 
 };
 
 
 
-export const activarProducto = async (id) => {
+
+export const activarProducto = async(id)=>{
+
 
     const response = await api.put(
-        `/productos/${id}/activate`
+
+        `/productos/${id}/activate`,
+
+        {},
+
+        authConfig()
+
     );
 
+
     return response.data;
+
 
 };
 
 
 
-export const eliminarProductoPermanente = async (id) => {
+
+export const eliminarProductoPermanente = async(id)=>{
+
 
     const response = await api.delete(
-        `/productos/${id}/force`
+
+        `/productos/${id}/force`,
+
+        authConfig()
+
     );
 
+
     return response.data;
+
 
 };
