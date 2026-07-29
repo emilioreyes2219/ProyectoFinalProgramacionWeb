@@ -7,6 +7,7 @@ import {
 import AuthLayout from "./layouts/AuthLayout";
 
 import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
 
 import Dashboard from "./pages/dashboard/Dashboard";
 
@@ -14,45 +15,54 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 import DashboardLayout from "./layouts/DashboardLayout";
 
+
 function App() {
 
     return (
 
         <Routes>
 
-    <Route element={<AuthLayout />}>
+            <Route element={<AuthLayout />}>
 
-        <Route
-            path="/login"
-            element={<Login />}
-        />
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
 
-    </Route>
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
 
-    <Route
-        element={
-            <ProtectedRoute>
-                <DashboardLayout />
-            </ProtectedRoute>
-        }
-    >
+            </Route>
 
-        <Route
-            path="/dashboard"
-            element={<Dashboard />}
-        />
 
-    </Route>
+            <Route
+                element={
+                    <ProtectedRoute>
+                        <DashboardLayout />
+                    </ProtectedRoute>
+                }
+            >
 
-    <Route
-        path="*"
-        element={<Navigate to="/login" replace />}
-    />
+                <Route
+                    path="/dashboard"
+                    element={<Dashboard />}
+                />
 
-</Routes>
+            </Route>
+
+
+            <Route
+                path="*"
+                element={<Navigate to="/login" replace />}
+            />
+
+        </Routes>
 
     );
 
 }
+
 
 export default App;
