@@ -17,6 +17,11 @@ export default function Catalogo(){
     const [categoria,setCategoria] = useState("");
 
 
+    const [cargando,setCargando] = useState(true);
+
+    const [error,setError] = useState("");
+
+
 
 
 
@@ -24,17 +29,41 @@ export default function Catalogo(){
 
         try{
 
+
+            setCargando(true);
+
+            setError("");
+
+
             const response = await obtenerProductos();
+
 
             setProductos(response.data);
 
+
+
         }catch(error){
 
+
             console.log(error);
+
+
+            setError(
+                "No se pudieron cargar los productos."
+            );
+
+
+        }finally{
+
+
+            setCargando(false);
+
 
         }
 
     };
+
+
 
 
 
@@ -42,17 +71,25 @@ export default function Catalogo(){
 
     const cargarCategorias = async()=>{
 
+
         try{
+
 
             const data = await obtenerCategorias();
 
+
             setCategorias(data.data ?? data);
+
+
 
         }catch(error){
 
+
             console.log(error);
 
+
         }
+
 
     };
 
@@ -60,13 +97,19 @@ export default function Catalogo(){
 
 
 
+
     useEffect(()=>{
+
 
         cargarProductos();
 
         cargarCategorias();
 
+
     },[]);
+
+
+
 
 
 
@@ -77,100 +120,144 @@ export default function Catalogo(){
     const agregarCarrito = (producto)=>{
 
 
-    let carrito = JSON.parse(
+        let carrito = JSON.parse(
 
-        localStorage.getItem("carrito")
+            localStorage.getItem("carrito")
 
-    ) || [];
-
-
-
-    const existe = carrito.find(
-
-        item=>item.id === producto.id
-
-    );
+        ) || [];
 
 
 
-    if(existe){
 
 
-        if(existe.cantidad >= producto.stock){
+        const existe = carrito.find(
 
-
-            Swal.fire(
-                "Stock máximo",
-                "No hay más productos disponibles",
-                "warning"
-            );
-
-
-            return;
-
-        }
-
-
-
-        carrito = carrito.map(item=>
-
-            item.id === producto.id
-
-            ?
-
-            {
-                ...item,
-                cantidad:item.cantidad + 1
-            }
-
-            :
-
-            item
+            item=>item.id === producto.id
 
         );
 
 
 
-    }else{
 
 
-        carrito.push({
+        if(existe){
 
-            ...producto,
 
-            cantidad:1
+
+            if(existe.cantidad >= producto.stock){
+
+
+
+                Swal.fire(
+
+                    "Stock máximo",
+
+                    "No hay más productos disponibles",
+
+                    "warning"
+
+                );
+
+
+                return;
+
+
+            }
+
+
+
+
+
+
+            carrito = carrito.map(item=>
+
+
+                item.id === producto.id
+
+
+                ?
+
+                {
+
+                    ...item,
+
+                    cantidad:item.cantidad + 1
+
+                }
+
+
+                :
+
+
+                item
+
+
+            );
+
+
+
+
+
+        }else{
+
+
+
+            carrito.push({
+
+
+                ...producto,
+
+
+                cantidad:1
+
+
+            });
+
+
+
+        }
+
+
+
+
+
+        localStorage.setItem(
+
+
+            "carrito",
+
+
+            JSON.stringify(carrito)
+
+
+        );
+
+
+
+
+
+
+        Swal.fire({
+
+
+            icon:"success",
+
+
+            title:"Agregado al carrito",
+
+
+            timer:1200,
+
+
+            showConfirmButton:false
+
 
         });
 
 
-    }
 
+    };
 
-
-    localStorage.setItem(
-
-        "carrito",
-
-        JSON.stringify(carrito)
-
-    );
-
-
-
-    Swal.fire({
-
-        icon:"success",
-
-        title:"Agregado al carrito",
-
-        timer:1200,
-
-        showConfirmButton:false
-
-    });
-
-
-};
 
 
 
@@ -182,7 +269,9 @@ export default function Catalogo(){
     const productosFiltrados = productos.filter((producto)=>{
 
 
+
         const coincideNombre =
+
 
             producto.nombre
 
@@ -196,15 +285,23 @@ export default function Catalogo(){
 
 
 
+
+
+
         const coincideCategoria =
 
+
             categoria === "" ||
+
 
             producto.categoria?.id == categoria;
 
 
 
+
+
         return coincideNombre && coincideCategoria;
+
 
 
     });
@@ -215,16 +312,26 @@ export default function Catalogo(){
 
 
 
+
+
     return (
+
 
 
         <div className="catalogo">
 
 
 
+
+
             <h1>
+
                 Catálogo de productos
+
             </h1>
+
+
+
 
 
 
@@ -234,15 +341,23 @@ export default function Catalogo(){
 
 
 
+
+
                 <input
+
 
                     placeholder="Buscar producto"
 
+
                     value={buscar}
 
+
                     onChange={(e)=>
+
                         setBuscar(e.target.value)
+
                     }
+
 
                 />
 
@@ -250,41 +365,68 @@ export default function Catalogo(){
 
 
 
+
+
+
                 <select
+
 
                     value={categoria}
 
+
                     onChange={(e)=>
+
                         setCategoria(e.target.value)
+
                     }
+
 
                 >
 
 
+
                     <option value="">
+
+
                         Todas las categorías
+
+
                     </option>
 
 
 
+
+
+
                     {
+
+
                         categorias.map((cat)=>(
+
 
                             <option
 
+
                                 key={cat.id}
+
 
                                 value={cat.id}
 
+
                             >
 
+
                                 {cat.nombre}
+
 
                             </option>
 
 
+
                         ))
+
                     }
+
 
 
 
@@ -292,7 +434,58 @@ export default function Catalogo(){
 
 
 
+
+
             </div>
+
+
+
+
+
+
+
+
+
+            {
+
+                cargando && (
+
+
+                    <h3>
+
+                        Cargando productos...
+
+                    </h3>
+
+
+                )
+
+            }
+
+
+
+
+
+
+
+            {
+
+
+                error && (
+
+
+                    <p className="error">
+
+                        {error}
+
+                    </p>
+
+
+                )
+
+            }
+
+
 
 
 
@@ -304,113 +497,198 @@ export default function Catalogo(){
 
 
 
+
+
+
             {
 
-                productosFiltrados.map((producto)=>(
+
+            productosFiltrados.map((producto)=>(
 
 
 
-                    <div
 
-                        className="producto-card"
 
-                        key={producto.id}
+                <div
+
+
+                    className="producto-card"
+
+
+                    key={producto.id}
+
+
+                >
+
+
+
+
+
+
+                    <h3>
+
+
+                        {producto.nombre}
+
+
+                    </h3>
+
+
+
+
+
+
+
+
+                    {
+
+
+                        producto.categoria && (
+
+
+                            <span className="categoria">
+
+
+                                {producto.categoria.nombre}
+
+
+                            </span>
+
+
+                        )
+
+
+                    }
+
+
+
+
+
+
+
+
+                    <p>
+
+
+                        {producto.descripcion}
+
+
+                    </p>
+
+
+
+
+
+
+
+
+                    <h2>
+
+
+                        ${producto.precio}
+
+
+                    </h2>
+
+
+
+
+
+
+
+
+                    <p>
+
+
+                        Stock disponible:
+
+
+                        {" "}
+
+
+                        {producto.stock}
+
+
+
+                    </p>
+
+
+
+
+
+
+
+
+
+                    <button
+
+
+                        disabled={producto.stock <= 0}
+
+
+                        onClick={()=>
+
+
+                            agregarCarrito(producto)
+
+
+                        }
+
 
                     >
 
 
 
-                        <h3>
-
-                            {producto.nombre}
-
-                        </h3>
-
-
-
-
                         {
 
-                            producto.categoria && (
 
-                                <span className="categoria">
+                            producto.stock <= 0
 
-                                    {producto.categoria.nombre}
 
-                                </span>
+                            ?
 
-                            )
+
+                            "Sin stock"
+
+
+                            :
+
+
+                            "Agregar al carrito 🛒"
+
+
 
                         }
 
 
 
-
-
-                        <p>
-
-                            {producto.descripcion}
-
-                        </p>
-
-
-
-
-
-                        <h2>
-
-                            ${producto.precio}
-
-                        </h2>
-
-
-
-
-
-                        <p>
-
-                            Stock disponible:
-
-                            {" "}
-
-                            {producto.stock}
-
-                        </p>
+                    </button>
 
 
 
 
 
 
-
-                        <button
-
-                            onClick={()=>
-
-                                agregarCarrito(producto)
-
-                            }
-
-                        >
-
-                            Agregar al carrito 🛒
-
-                        </button>
+                </div>
 
 
 
 
-                    </div>
+            ))
 
 
-
-                ))
 
             }
 
 
 
+
+
+
             </div>
+
+
+
 
 
 
