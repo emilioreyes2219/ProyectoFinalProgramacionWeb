@@ -1,0 +1,6 @@
+name: Local
+variables:
+  - name: base_url
+    value: http://127.0.0.1:8000/api
+  - name: token
+    value: 76|qjnw0y7DYkiR808rNjoLJoEFkBQvy5V7vebgQpoy43f015e3
