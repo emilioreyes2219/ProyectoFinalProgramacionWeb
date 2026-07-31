@@ -8,6 +8,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\PedidoController;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\CorreoPrueba;
+use App\Http\Controllers\Api\UserController;
+
+Route::get('/correo-prueba', function () {
+    Mail::to('TU_CORREO@gmail.com')->send(new CorreoPrueba());
+
+    return response()->json([
+        'mensaje' => 'Correo enviado correctamente'
+    ]);
+});
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -29,6 +40,23 @@ Route::get('/dashboard', [DashboardController::class, 'index']);
         ]);
     })->middleware('role:admin');
 
+// =========================
+// USUARIOS
+// =========================
+
+Route::middleware('role:admin')->group(function () {
+
+    Route::get('/usuarios', [UserController::class, 'index']);
+
+    Route::post('/usuarios', [UserController::class, 'store']);
+
+    Route::get('/usuarios/{user}', [UserController::class, 'show']);
+
+    Route::put('/usuarios/{user}', [UserController::class, 'update']);
+
+    Route::delete('/usuarios/{user}', [UserController::class, 'destroy']);
+
+});
 
 // =========================
 // PEDIDOS
