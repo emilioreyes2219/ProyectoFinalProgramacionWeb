@@ -17,7 +17,7 @@ La aplicación implementa autenticación con Laravel Sanctum, control de acceso 
 # Integrantes
 
 - Jorge Emilio Núñez Reyes
-- Nombre del compañero
+- Gerardo Jared Martinez Espina
 
 ---
 
